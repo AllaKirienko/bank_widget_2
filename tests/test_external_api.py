@@ -7,12 +7,8 @@ def test_convert_rub():
     """Проверяет конвертацию рублей."""
 
     transaction = {
-        "operationAmount": {
-            "amount": "1000",
-            "currency": {
-                "code": "RUB"
-            }
-        }
+        "amount": 1000,
+        "currency_code": "RUB"
     }
 
     result = convert_currency(transaction)
@@ -29,12 +25,8 @@ def test_convert_usd(mock_get):
     }
 
     transaction = {
-        "operationAmount": {
-            "amount": "100",
-            "currency": {
-                "code": "USD"
-            }
-        }
+        "amount": 100,
+        "currency_code": "USD"
     }
 
     result = convert_currency(transaction)
