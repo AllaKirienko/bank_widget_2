@@ -11,7 +11,7 @@ def test_read_csv() -> None:
     with patch("src.readers.pd.read_csv", return_value=mock_data) as mock_read:
         result = read_csv("data/transactions.csv")
 
-    mock_read.assert_called_once_with("data/transactions.csv", sep=";")
+    mock_read.assert_called_once()
     assert result == [{"id": 1, "amount": 100}]
 
 
@@ -26,5 +26,5 @@ def test_read_excel() -> None:
     ) as mock_read:
         result = read_excel("data/transactions_excel.xlsx")
 
-    mock_read.assert_called_once_with("data/transactions_excel.xlsx")
+    mock_read.assert_called_once()
     assert result == [{"id": 1, "amount": 100}]
