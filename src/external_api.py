@@ -9,8 +9,8 @@ load_dotenv()
 def convert_currency(transaction: dict) -> float:
     """Конвертирует сумму транзакции в рубли."""
 
-    amount = float(transaction["operationAmount"]["amount"])
-    currency = transaction["operationAmount"]["currency"]["code"]
+    amount = float(transaction["amount"])
+    currency = transaction["currency_code"]
 
     if currency == "RUB":
         return amount

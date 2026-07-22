@@ -6,8 +6,13 @@ logger = logging.getLogger(__name__)
 
 logger.setLevel(logging.DEBUG)
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+LOG_DIR = BASE_DIR / "logs"
+LOG_DIR.mkdir(exist_ok=True)
+
 file_handler = logging.FileHandler(
-    "logs/utils.log",
+    LOG_DIR / "utils.log",
     mode="w",
     encoding="utf-8"
 )
@@ -30,7 +35,11 @@ def read_json_file(file_path: str) -> list[dict]:
 
         if isinstance(data, list):
             logger.debug("JSON файл успешно прочитан")
-            return data
+            return [
+                normalize_transaction(item)
+                for item in data
+                if item
+            ]
 
         logger.error("JSON файл содержит не список")
         return []
@@ -42,3 +51,36 @@ def read_json_file(file_path: str) -> list[dict]:
     except json.JSONDecodeError:
         logger.error("Ошибка чтения JSON файла")
         return []
+
+
+def normalize_transaction(transaction: dict) -> dict:
+    """Приводит транзакцию к единому формату."""
+
+    if "operationAmount" in transaction:
+        return {
+            "id": transaction["id"],
+            "state": transaction["state"],
+            "date": transaction["date"],
+            "amount": float(transaction["operationAmount"]["amount"]),
+            "currency_name": (
+                transaction["operationAmount"]["currency"]["name"]
+            ),
+            "currency_code": (
+                transaction["operationAmount"]["currency"]["code"]
+            ),
+            "description": transaction["description"],
+            "from": transaction.get("from"),
+            "to": transaction.get("to"),
+        }
+
+    return {
+        "id": transaction["id"],
+        "state": transaction["state"],
+        "date": transaction["date"],
+        "amount": float(transaction["amount"]),
+        "currency_name": transaction["currency_name"],
+        "currency_code": transaction["currency_code"],
+        "description": transaction["description"],
+        "from": transaction.get("from"),
+        "to": transaction.get("to"),
+    }
